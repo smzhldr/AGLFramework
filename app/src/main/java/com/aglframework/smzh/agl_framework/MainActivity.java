@@ -1,8 +1,10 @@
-gipackage com.aglframework.smzh.agl_framework;
+package com.aglframework.smzh.agl_framework;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.aglframework.smzh.agl_framework.R;
 
 public class MainActivity extends Activity {
 

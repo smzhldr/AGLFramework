@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AGL_Framework.iml" filepath="$PROJECT_DIR$/AGL_Framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/aglframework/aglframework.iml" filepath="$PROJECT_DIR$/aglframework/aglframework.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
