@@ -1,11 +1,11 @@
-package com.aglframework.smzh.aglframework;
+package com.aglframework.smzh;
 
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
-import com.aglframework.smzh.aglframework.filter.AGLBaseFilter;
-import com.aglframework.smzh.aglframework.filter.AGLOutputFilter;
+import com.aglframework.smzh.filter.AGLBaseFilter;
+import com.aglframework.smzh.filter.AGLOutputFilter;
 
 import java.nio.IntBuffer;
 import java.util.LinkedList;
@@ -15,14 +15,10 @@ import java.util.concurrent.Semaphore;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static android.opengl.GLES20.glViewport;
-
 public class AGLRenderer implements GLSurfaceView.Renderer {
 
     private AGLRendererSource rendererSource;
     private AGLOutputFilter outputFilter;
-    private int outputWidth;
-    private int outputHeight;
     private final Queue<Runnable> runOnDraw;
     private final Queue<Runnable> runOnDrawEnd;
     private AGLBaseFilter filter;
@@ -43,12 +39,9 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        glViewport(0, 0, width, height);
         if (rendererSource != null) {
-            rendererSource.onSizeChange(width, height);
+            rendererSource.onSizeChange();
         }
-        outputWidth = width;
-        outputHeight = height;
     }
 
 
@@ -60,7 +53,7 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
         runAll(runOnDraw);
 
         if (rendererSource != null) {
-            Frame frame = rendererSource.createFrame();
+            AGLBaseFilter.Frame frame = rendererSource.createFrame();
 
             if (filter != null && !disable) {
                 frame = filter.draw(frame);
@@ -82,7 +75,7 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
 
     void setRendererSource(AGLRendererSource rendererSource) {
         this.rendererSource = rendererSource;
-        this.rendererSource.onSizeChange(outputWidth, outputHeight);
+        this.rendererSource.onSizeChange();
     }
 
     void clear() {
@@ -138,7 +131,7 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
         this.saveFilteredBitmapWaiter = saveFilteredBitmapWaiter;
     }
 
-    private void saveFilteredBitmap(Frame frame) {
+    private void saveFilteredBitmap(AGLBaseFilter.Frame frame) {
         int[] frameBuffers = new int[1];
 
         GLES20.glGenFramebuffers(1, frameBuffers, 0);

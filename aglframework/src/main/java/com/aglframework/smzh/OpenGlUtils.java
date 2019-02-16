@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.aglframework.smzh.aglframework;
+package com.aglframework.smzh;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

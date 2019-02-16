@@ -1,4 +1,4 @@
-package com.aglframework.smzh.aglframework.camera;
+package com.aglframework.smzh.camera;
 
 import android.graphics.SurfaceTexture;
 import android.graphics.SurfaceTexture.OnFrameAvailableListener;
@@ -6,41 +6,45 @@ import android.hardware.Camera;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
-import com.aglframework.smzh.aglframework.AGLRendererSource;
-import com.aglframework.smzh.aglframework.Frame;
-import com.aglframework.smzh.aglframework.OpenGlUtils;
-import com.aglframework.smzh.aglframework.filter.AGLCameraPreviewFilter;
+import com.aglframework.smzh.AGLRendererSource;
+import com.aglframework.smzh.OpenGlUtils;
+import com.aglframework.smzh.filter.AGLBaseFilter;
+import com.aglframework.smzh.filter.AGLBaseFilter.*;
+import com.aglframework.smzh.filter.AGLCameraPreviewFilter;
 
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class CuteRendererSourceCamera implements AGLRendererSource {
+@SuppressWarnings("deprecation")
+public class CuteRendererSourceCamera1 implements AGLRendererSource {
 
     private OnFrameAvailableListener onFrameAvailableListener;
-    private AGLCamera cuteCamera;
+    private AGLCamera1 aglCamera1;
     private SurfaceTexture surfaceTexture;
     private AGLCameraPreviewFilter aglCameraPreviewFilter;
     private Frame frame;
     private int width;
     private int height;
 
-    public CuteRendererSourceCamera(AGLCamera cuteCamera, OnFrameAvailableListener availableListener) {
+    public CuteRendererSourceCamera1(AGLCamera1 cuteCamera, OnFrameAvailableListener availableListener) {
         this.onFrameAvailableListener = availableListener;
-        this.cuteCamera = cuteCamera;
+        this.aglCamera1 = cuteCamera;
         this.aglCameraPreviewFilter = new AGLCameraPreviewFilter();
+        Camera.Size size = cuteCamera.getParameter().getPreviewSize();
+        this.width = size.height;
+        this.height = size.width;
     }
 
     @Override
-    public Frame createFrame() {
+    public AGLBaseFilter.Frame createFrame() {
         if (surfaceTexture == null) {
             int textureId = createOESTexture();
             surfaceTexture = new SurfaceTexture(textureId);
             if (onFrameAvailableListener != null) {
                 surfaceTexture.setOnFrameAvailableListener(onFrameAvailableListener);
-                cuteCamera.startPreview(surfaceTexture);
+                aglCamera1.startPreview(surfaceTexture);
             }
-            Camera.Size size = cuteCamera.getParameter().getPreviewSize();
-            frame = new Frame(textureId, size.height, size.width);
+            frame = new AGLBaseFilter.Frame(textureId, width, height);
         }
         try {
             surfaceTexture.updateTexImage();
@@ -52,14 +56,10 @@ public class CuteRendererSourceCamera implements AGLRendererSource {
 
 
     @Override
-    public void onSizeChange(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public void onSizeChange() {
         float[] matrix = new float[16];
-        Camera.Size size = cuteCamera.getParameter().getPreviewSize();
-
-        OpenGlUtils.getShowMatrix(matrix, size.height, size.width, width, height);
-        if (cuteCamera.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+        OpenGlUtils.getShowMatrix(matrix, width, height, width, height);
+        if (aglCamera1.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             OpenGlUtils.rotate(matrix, 90);
         } else {
             OpenGlUtils.flip(matrix, true, false);

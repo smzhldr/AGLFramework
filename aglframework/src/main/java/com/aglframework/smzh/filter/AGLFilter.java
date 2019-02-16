@@ -1,17 +1,16 @@
-package com.aglframework.smzh.aglframework.filter;
+package com.aglframework.smzh.filter;
 
 import android.opengl.GLES20;
 
-import com.aglframework.smzh.aglframework.Frame;
-import com.aglframework.smzh.aglframework.FrameBuffer;
-import com.aglframework.smzh.aglframework.FrameBufferManager;
+import com.aglframework.smzh.FrameBuffer;
+import com.aglframework.smzh.FrameBufferManager;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 
-public abstract class AGLFilter implements AGLBaseFilter {
+public abstract class AGLFilter extends AGLBaseFilter {
 
     protected int programId;
     protected FloatBuffer cubeBuffer = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();

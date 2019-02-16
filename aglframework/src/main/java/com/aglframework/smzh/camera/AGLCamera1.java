@@ -1,25 +1,26 @@
-package com.aglframework.smzh.aglframework.camera;
+package com.aglframework.smzh.camera;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 
-import com.aglframework.smzh.aglframework.AGLView;
+import com.aglframework.smzh.AGLView;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-public class AGLCamera {
+@SuppressWarnings("deprecation")
+public class AGLCamera1 {
 
     private Camera camera;
     private int cameraId;
-    private AGLView cuteImageView;
+    private AGLView aglView;
     private int previewWidth;
     private int previewHeight;
 
 
-    public AGLCamera(AGLView cuteImageView, int width, int height) {
-        this.cuteImageView = cuteImageView;
+    public AGLCamera1(AGLView aglView, int width, int height) {
+        this.aglView = aglView;
         this.previewWidth = width;
         this.previewHeight = height;
         if (Camera.getNumberOfCameras() > 1) {
@@ -27,29 +28,35 @@ public class AGLCamera {
         } else {
             cameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
         }
-
     }
 
+    public AGLCamera1(AGLView aglView) {
+        this.aglView = aglView;
+    }
+
+    @SuppressWarnings("SuspiciousNameCombination")
     public void open() {
         if (camera == null) {
             camera = Camera.open(cameraId);
             Camera.Parameters parameters = camera.getParameters();
-            List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();
 
-            int width = previewHeight;
-            int height = previewWidth;
-            if (sizeList.size() > 1) {
-                Iterator<Camera.Size> iterator = sizeList.iterator();
-                while (iterator.hasNext()) {
-                    Camera.Size cur = iterator.next();
-                    if (cur.width >= width && cur.height >= height) {
-                        width = cur.width;
-                        height = cur.height;
-                        break;
+            if (previewWidth != 0 && previewHeight != 0) {
+                List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();
+                int width = previewHeight;
+                int height = previewWidth;
+                if (sizeList.size() > 1) {
+                    Iterator<Camera.Size> iterator = sizeList.iterator();
+                    while (iterator.hasNext()) {
+                        Camera.Size cur = iterator.next();
+                        if (cur.width >= width && cur.height >= height) {
+                            width = cur.width;
+                            height = cur.height;
+                            break;
+                        }
                     }
                 }
+                parameters.setPreviewSize(width, height);
             }
-            parameters.setPreviewSize(width, height);
             if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
                 parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
             }
@@ -61,10 +68,10 @@ public class AGLCamera {
                 }
             });
         }
-        cuteImageView.setRendererSource(new CuteRendererSourceCamera(this, new SurfaceTexture.OnFrameAvailableListener() {
+        aglView.setRendererSource(new CuteRendererSourceCamera1(this, new SurfaceTexture.OnFrameAvailableListener() {
             @Override
             public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                cuteImageView.requestRender();
+                aglView.requestRender();
             }
         }));
     }
@@ -73,7 +80,7 @@ public class AGLCamera {
         camera.stopPreview();
         camera.release();
         camera = null;
-        cuteImageView.clear();
+        aglView.clear();
 
     }
 

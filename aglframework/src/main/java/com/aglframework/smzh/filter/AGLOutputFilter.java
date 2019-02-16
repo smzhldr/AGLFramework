@@ -1,8 +1,8 @@
-package com.aglframework.smzh.aglframework.filter;
+package com.aglframework.smzh.filter;
 
 import android.opengl.GLES20;
 
-import com.aglframework.smzh.aglframework.OpenGlUtils;
+import com.aglframework.smzh.OpenGlUtils;
 
 public class AGLOutputFilter extends AGLFilter {
 

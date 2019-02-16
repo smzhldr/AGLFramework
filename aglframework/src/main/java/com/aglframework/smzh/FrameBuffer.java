@@ -1,4 +1,4 @@
-package com.aglframework.smzh.aglframework;
+package com.aglframework.smzh;
 
 public class FrameBuffer {
 

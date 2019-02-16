@@ -1,4 +1,4 @@
-package com.aglframework.smzh.aglframework.camera;
+package com.aglframework.smzh.camera;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.aglframework.smzh.aglframework.AGLView;
+import com.aglframework.smzh.AGLView;
 
 
 public class CameraPreview extends AGLView {

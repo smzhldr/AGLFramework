@@ -1,10 +1,12 @@
-package com.aglframework.smzh.aglframework;
+package com.aglframework.smzh;
+
+import com.aglframework.smzh.filter.AGLBaseFilter.Frame;
 
 public interface AGLRendererSource {
 
     Frame createFrame();
 
-    void onSizeChange(int width, int height);
+    void onSizeChange();
 
     void destroy();
 

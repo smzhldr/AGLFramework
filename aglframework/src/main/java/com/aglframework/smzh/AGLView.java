@@ -1,4 +1,4 @@
-package com.aglframework.smzh.aglframework;
+package com.aglframework.smzh;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,7 +7,8 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Size;
 
-import com.aglframework.smzh.aglframework.filter.AGLBaseFilter;
+
+import com.aglframework.smzh.filter.AGLBaseFilter;
 
 import java.util.concurrent.Semaphore;
 

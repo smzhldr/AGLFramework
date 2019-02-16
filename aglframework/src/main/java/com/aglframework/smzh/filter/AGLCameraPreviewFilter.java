@@ -1,10 +1,9 @@
-package com.aglframework.smzh.aglframework.filter;
+package com.aglframework.smzh.filter;
 
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
-import com.aglframework.smzh.aglframework.Frame;
-import com.aglframework.smzh.aglframework.OpenGlUtils;
+import com.aglframework.smzh.OpenGlUtils;
 
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glGetUniformLocation;
