@@ -1,16 +1,14 @@
-package com.aglframework.smzh.filter;
+package com.aglframework.smzh;
 
 import android.opengl.GLES20;
 
-import com.aglframework.smzh.FrameBuffer;
-import com.aglframework.smzh.FrameBufferManager;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 
-public abstract class AGLFilter extends AGLBaseFilter {
+public abstract class AGLFilter implements IFilter {
 
     protected int programId;
     protected FloatBuffer cubeBuffer = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -46,13 +44,13 @@ public abstract class AGLFilter extends AGLBaseFilter {
             "     gl_FragColor = vec4(texture2D(inputImageTexture, textureCoordinate).rgb, 1.0);\n" +
             "}";
 
-    protected static final float cube[] = {
+    public static final float cube[] = {
             -1.0f, -1.0f,
             1.0f, -1.0f,
             -1.0f, 1.0f,
             1.0f, 1.0f,
     };
-    protected float[] textureCords = {
+    public float[] textureCords = {
             0.0f, 0.0f,
             1.0f, 0.0f,
             0.0f, 1.0f,

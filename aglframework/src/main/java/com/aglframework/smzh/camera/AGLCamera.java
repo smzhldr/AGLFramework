@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class AGLCamera1 {
+public class AGLCamera {
 
     private Camera camera;
     private int cameraId;
@@ -19,7 +19,7 @@ public class AGLCamera1 {
     private int previewHeight;
 
 
-    public AGLCamera1(AGLView aglView, int width, int height) {
+    public AGLCamera(AGLView aglView, int width, int height) {
         this.aglView = aglView;
         this.previewWidth = width;
         this.previewHeight = height;
@@ -30,7 +30,7 @@ public class AGLCamera1 {
         }
     }
 
-    public AGLCamera1(AGLView aglView) {
+    public AGLCamera(AGLView aglView) {
         this.aglView = aglView;
     }
 
@@ -67,13 +67,14 @@ public class AGLCamera1 {
 
                 }
             });
+
+            aglView.setRendererSource(new RendererSourceCamera(this, new SurfaceTexture.OnFrameAvailableListener() {
+                @Override
+                public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                    aglView.requestRender();
+                }
+            }));
         }
-        aglView.setRendererSource(new CuteRendererSourceCamera1(this, new SurfaceTexture.OnFrameAvailableListener() {
-            @Override
-            public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                aglView.requestRender();
-            }
-        }));
     }
 
     public void close() {

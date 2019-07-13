@@ -1,22 +1,13 @@
 package com.aglframework.smzh;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Size;
-
-
-import com.aglframework.smzh.filter.AGLBaseFilter;
-
-import java.util.concurrent.Semaphore;
 
 public class AGLView extends GLSurfaceView {
 
     private AGLRenderer renderer;
-    private AGLBaseFilter filter;
-    public Size forceSize = null;
 
     public AGLView(Context context) {
         super(context);
@@ -39,7 +30,7 @@ public class AGLView extends GLSurfaceView {
         }
     }
 
-    public void setRendererSource(AGLRendererSource rendererSource) {
+    public void setRendererSource(ISource rendererSource) {
         renderer.setRendererSource(rendererSource);
         requestRender();
     }
@@ -49,30 +40,14 @@ public class AGLView extends GLSurfaceView {
         requestRender();
     }
 
-    public void setFilter(final AGLBaseFilter filter) {
-        this.filter = filter;
-        renderer.setFilter(this.filter);
+    public void setFilter(final IFilter filter) {
+        renderer.setFilter(filter);
         requestRender();
     }
 
     public void setDisabled(boolean disable) {
         renderer.setDisable(disable);
         requestRender();
-    }
-
-    public Bitmap capture(final int width, final int height) throws InterruptedException {
-
-        final Semaphore waiter = new Semaphore(0);
-        renderer.setSaveFilteredBitmapWaiter(waiter);
-        requestRender();
-
-        try {
-            waiter.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return renderer.getFilteredBitmap();
-
     }
 
     public int getImageWidth() {

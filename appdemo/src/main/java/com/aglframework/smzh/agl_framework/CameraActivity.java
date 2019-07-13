@@ -2,21 +2,23 @@ package com.aglframework.smzh.agl_framework;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.aglframework.smzh.AGLView;
-import com.aglframework.smzh.camera.AGLCamera1;
+import com.aglframework.smzh.camera.AGLCamera;
 
 import java.util.List;
 
-import pub.devrel.easypermissions.EasyPermissions;
-
-public class CameraActivity extends Activity implements EasyPermissions.PermissionCallbacks {
+public class CameraActivity extends Activity /*implements EasyPermissions.PermissionCallbacks*/ {
 
     AGLView aglView;
-    AGLCamera1 aglCamera;
+    AGLCamera aglCamera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +28,14 @@ public class CameraActivity extends Activity implements EasyPermissions.Permissi
         setContentView(R.layout.activity_camera);
 
         aglView = findViewById(R.id.camera_preview);
-        if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
-            EasyPermissions.requestPermissions(this, "该应用需要照相机权限和读写权限", 200, Manifest.permission.CAMERA);
-        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (aglCamera == null) {
-            aglCamera = new AGLCamera1(aglView, 1080, 2160);
+            aglCamera = new AGLCamera(aglView, 1080, 2160);
         }
         aglCamera.open();
     }
@@ -49,7 +49,7 @@ public class CameraActivity extends Activity implements EasyPermissions.Permissi
         }
     }
 
-    @Override
+  /*  @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
 
     }
@@ -57,6 +57,6 @@ public class CameraActivity extends Activity implements EasyPermissions.Permissi
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
 
-    }
+    }*/
 
 }

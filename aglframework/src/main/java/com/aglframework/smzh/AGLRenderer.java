@@ -1,34 +1,27 @@
 package com.aglframework.smzh;
 
-import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
-import com.aglframework.smzh.filter.AGLBaseFilter;
-import com.aglframework.smzh.filter.AGLOutputFilter;
+import com.aglframework.smzh.filter.RenderScreenFilter;
 
-import java.nio.IntBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.Semaphore;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class AGLRenderer implements GLSurfaceView.Renderer {
 
-    private AGLRendererSource rendererSource;
-    private AGLOutputFilter outputFilter;
+    private ISource rendererSource;
+    private RenderScreenFilter screenFilter;
     private final Queue<Runnable> runOnDraw;
     private final Queue<Runnable> runOnDrawEnd;
-    private AGLBaseFilter filter;
+    private IFilter filter;
     private boolean disable;
-    private Semaphore saveFilteredBitmapWaiter;
-    private Bitmap filteredBitmap;
-
 
     AGLRenderer() {
-        outputFilter = new AGLOutputFilter();
+        screenFilter = new RenderScreenFilter();
         runOnDraw = new LinkedList<>();
         runOnDrawEnd = new LinkedList<>();
     }
@@ -53,27 +46,21 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
         runAll(runOnDraw);
 
         if (rendererSource != null) {
-            AGLBaseFilter.Frame frame = rendererSource.createFrame();
+            IFilter.Frame frame = rendererSource.createFrame();
 
             if (filter != null && !disable) {
                 frame = filter.draw(frame);
             }
 
-            if (saveFilteredBitmapWaiter != null) {
-                saveFilteredBitmap(frame);
-                saveFilteredBitmapWaiter.release();
-                saveFilteredBitmapWaiter = null;
-            }
-
-            if (outputFilter != null) {
-                outputFilter.draw(frame);
+            if (screenFilter != null) {
+                screenFilter.draw(frame);
             }
         }
 
         runAll(runOnDrawEnd);
     }
 
-    void setRendererSource(AGLRendererSource rendererSource) {
+    void setRendererSource(ISource rendererSource) {
         this.rendererSource = rendererSource;
         this.rendererSource.onSizeChange();
     }
@@ -84,17 +71,17 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
             rendererSource = null;
         }
 
-        if (outputFilter != null) {
-            outputFilter.destroy();
+        if (screenFilter != null) {
+            screenFilter.destroy();
         }
 
     }
 
-    void setFilter(final AGLBaseFilter filter) {
+    void setFilter(final IFilter filter) {
         runOnDraw(new Runnable() {
             @Override
             public void run() {
-                final AGLBaseFilter oldFilter = AGLRenderer.this.filter;
+                final IFilter oldFilter = AGLRenderer.this.filter;
                 AGLRenderer.this.filter = filter;
                 if (oldFilter != null) {
                     oldFilter.destroy();
@@ -127,36 +114,7 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
         this.disable = disable;
     }
 
-    void setSaveFilteredBitmapWaiter(Semaphore saveFilteredBitmapWaiter) {
-        this.saveFilteredBitmapWaiter = saveFilteredBitmapWaiter;
-    }
-
-    private void saveFilteredBitmap(AGLBaseFilter.Frame frame) {
-        int[] frameBuffers = new int[1];
-
-        GLES20.glGenFramebuffers(1, frameBuffers, 0);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffers[0]);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
-                GLES20.GL_TEXTURE_2D, frame.getTextureId(), 0);
-
-        final int bitmapBuffer[] = new int[frame.getTextureWidth() * frame.getTextureHeight()];
-        IntBuffer filteredBitmapBuffer = IntBuffer.wrap(bitmapBuffer);
-        filteredBitmapBuffer.position(0);
-        GLES20.glReadPixels(0, 0, frame.getTextureWidth(), frame.getTextureHeight(), GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, filteredBitmapBuffer);
-
-        filteredBitmap = Bitmap.createBitmap(frame.getTextureWidth(), frame.getTextureHeight(), Bitmap.Config.ARGB_8888);
-        filteredBitmap.copyPixelsFromBuffer(filteredBitmapBuffer);
-
-        GLES20.glDeleteFramebuffers(frameBuffers.length, frameBuffers, 0);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-    }
-
-    Bitmap getFilteredBitmap() {
-        return filteredBitmap;
-    }
-
-
-    public AGLRendererSource getRendererSource() {
+    public ISource getRendererSource() {
         return rendererSource;
     }
 }

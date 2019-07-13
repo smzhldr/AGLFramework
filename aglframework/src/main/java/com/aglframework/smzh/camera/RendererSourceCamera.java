@@ -6,37 +6,37 @@ import android.hardware.Camera;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
-import com.aglframework.smzh.AGLRendererSource;
+import com.aglframework.smzh.ISource;
 import com.aglframework.smzh.OpenGlUtils;
-import com.aglframework.smzh.filter.AGLBaseFilter;
-import com.aglframework.smzh.filter.AGLBaseFilter.*;
-import com.aglframework.smzh.filter.AGLCameraPreviewFilter;
+import com.aglframework.smzh.IFilter;
+import com.aglframework.smzh.IFilter.*;
+import com.aglframework.smzh.filter.CamerPreviewFilter;
 
 
 import javax.microedition.khronos.opengles.GL10;
 
 @SuppressWarnings("deprecation")
-public class CuteRendererSourceCamera1 implements AGLRendererSource {
+public class RendererSourceCamera implements ISource {
 
     private OnFrameAvailableListener onFrameAvailableListener;
-    private AGLCamera1 aglCamera1;
+    private AGLCamera aglCamera1;
     private SurfaceTexture surfaceTexture;
-    private AGLCameraPreviewFilter aglCameraPreviewFilter;
+    private CamerPreviewFilter previewFilter;
     private Frame frame;
     private int width;
     private int height;
 
-    public CuteRendererSourceCamera1(AGLCamera1 cuteCamera, OnFrameAvailableListener availableListener) {
+    public RendererSourceCamera(AGLCamera cuteCamera, OnFrameAvailableListener availableListener) {
         this.onFrameAvailableListener = availableListener;
         this.aglCamera1 = cuteCamera;
-        this.aglCameraPreviewFilter = new AGLCameraPreviewFilter();
+        this.previewFilter = new CamerPreviewFilter();
         Camera.Size size = cuteCamera.getParameter().getPreviewSize();
         this.width = size.height;
         this.height = size.width;
     }
 
     @Override
-    public AGLBaseFilter.Frame createFrame() {
+    public IFilter.Frame createFrame() {
         if (surfaceTexture == null) {
             int textureId = createOESTexture();
             surfaceTexture = new SurfaceTexture(textureId);
@@ -44,14 +44,14 @@ public class CuteRendererSourceCamera1 implements AGLRendererSource {
                 surfaceTexture.setOnFrameAvailableListener(onFrameAvailableListener);
                 aglCamera1.startPreview(surfaceTexture);
             }
-            frame = new AGLBaseFilter.Frame(textureId, width, height);
+            frame = new IFilter.Frame(textureId, width, height);
         }
         try {
             surfaceTexture.updateTexImage();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return aglCameraPreviewFilter.draw(frame);
+        return previewFilter.draw(frame);
     }
 
 
@@ -65,7 +65,7 @@ public class CuteRendererSourceCamera1 implements AGLRendererSource {
             OpenGlUtils.flip(matrix, true, false);
             OpenGlUtils.rotate(matrix, 270);
         }
-        aglCameraPreviewFilter.setMatrix(matrix);
+        previewFilter.setMatrix(matrix);
     }
 
     private int createOESTexture() {
@@ -86,7 +86,7 @@ public class CuteRendererSourceCamera1 implements AGLRendererSource {
 
     @Override
     public void destroy() {
-        aglCameraPreviewFilter.destroy();
+        previewFilter.destroy();
     }
 
 

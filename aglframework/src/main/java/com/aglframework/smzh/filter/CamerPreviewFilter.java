@@ -3,12 +3,13 @@ package com.aglframework.smzh.filter;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
+import com.aglframework.smzh.AGLFilter;
 import com.aglframework.smzh.OpenGlUtils;
 
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glGetUniformLocation;
 
-public class AGLCameraPreviewFilter extends AGLFilter {
+public class CamerPreviewFilter extends AGLFilter {
 
     private static final String vertexShaderCode =
             "attribute vec4 vPosition;" +

@@ -2,11 +2,12 @@ package com.aglframework.smzh.filter;
 
 import android.opengl.GLES20;
 
+import com.aglframework.smzh.AGLFilter;
 import com.aglframework.smzh.OpenGlUtils;
 
-public class AGLOutputFilter extends AGLFilter {
+public class RenderScreenFilter extends AGLFilter {
 
-    public AGLOutputFilter(){
+    public RenderScreenFilter(){
         setNeedRendererOnScreen(true);
     }
 

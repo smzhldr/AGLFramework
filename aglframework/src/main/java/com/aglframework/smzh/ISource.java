@@ -1,8 +1,8 @@
 package com.aglframework.smzh;
 
-import com.aglframework.smzh.filter.AGLBaseFilter.Frame;
+import com.aglframework.smzh.IFilter.Frame;
 
-public interface AGLRendererSource {
+public interface ISource {
 
     Frame createFrame();
 
