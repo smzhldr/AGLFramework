@@ -69,6 +69,10 @@ public abstract class AGLFilter implements IFilter {
     public Frame draw(Frame frame) {
         init();
 
+        if (programId <= 0) {
+            return frame;
+        }
+
         int textureWidth = frame.getTextureWidth();
         int textureHeight = frame.getTextureHeight();
         updateOutputSize(textureWidth, textureHeight);

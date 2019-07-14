@@ -8,4 +8,68 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ImageView
+        android:id="@+id/iv_camera_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:src="@drawable/ic_switch" />
+
+    <ImageView
+        android:id="@+id/iv_camera_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="30dp"
+        android:src="@drawable/ic_home" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_alignParentBottom="true"
+        android:paddingTop="20dp"
+        android:background="#58000000">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:layout_marginStart="20dp"
+            android:text="美白"/>
+
+        <SeekBar
+            android:id="@+id/sb_white"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginStart="50dp"
+            android:min="0"
+            android:max="100"
+            android:progressBackgroundTint="#88ffffff"
+            android:layout_marginEnd="30dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:layout_marginTop="50dp"
+            android:textColor="#ffffff"
+            android:layout_marginStart="20dp"
+            android:text="磨皮"/>
+
+        <SeekBar
+            android:id="@+id/sb_smooth"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:min="0"
+            android:max="100"
+            android:progressBackgroundTint="#88ffffff"
+            android:layout_marginEnd="30dp"/>
+    </RelativeLayout>
+
 </RelativeLayout>

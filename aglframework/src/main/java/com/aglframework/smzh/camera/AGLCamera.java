@@ -57,8 +57,8 @@ public class AGLCamera {
                 }
                 parameters.setPreviewSize(width, height);
             }
-            if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
             }
             camera.setParameters(parameters);
             camera.autoFocus(new Camera.AutoFocusCallback() {

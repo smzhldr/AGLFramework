@@ -19,18 +19,18 @@ import javax.microedition.khronos.opengles.GL10;
 public class RendererSourceCamera implements ISource {
 
     private OnFrameAvailableListener onFrameAvailableListener;
-    private AGLCamera aglCamera1;
+    private AGLCamera camera;
     private SurfaceTexture surfaceTexture;
     private CamerPreviewFilter previewFilter;
     private Frame frame;
     private int width;
     private int height;
 
-    public RendererSourceCamera(AGLCamera cuteCamera, OnFrameAvailableListener availableListener) {
+    public RendererSourceCamera(AGLCamera camera, OnFrameAvailableListener availableListener) {
         this.onFrameAvailableListener = availableListener;
-        this.aglCamera1 = cuteCamera;
+        this.camera = camera;
         this.previewFilter = new CamerPreviewFilter();
-        Camera.Size size = cuteCamera.getParameter().getPreviewSize();
+        Camera.Size size = camera.getParameter().getPreviewSize();
         this.width = size.height;
         this.height = size.width;
     }
@@ -42,7 +42,7 @@ public class RendererSourceCamera implements ISource {
             surfaceTexture = new SurfaceTexture(textureId);
             if (onFrameAvailableListener != null) {
                 surfaceTexture.setOnFrameAvailableListener(onFrameAvailableListener);
-                aglCamera1.startPreview(surfaceTexture);
+                camera.startPreview(surfaceTexture);
             }
             frame = new IFilter.Frame(textureId, width, height);
         }
@@ -59,7 +59,7 @@ public class RendererSourceCamera implements ISource {
     public void onSizeChange() {
         float[] matrix = new float[16];
         OpenGlUtils.getShowMatrix(matrix, width, height, width, height);
-        if (aglCamera1.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+        if (camera.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             OpenGlUtils.rotate(matrix, 90);
         } else {
             OpenGlUtils.flip(matrix, true, false);

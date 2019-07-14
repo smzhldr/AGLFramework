@@ -9,9 +9,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-
-import com.aglframework.smzh.agl_framework.R;
 
 public class MainActivity extends Activity {
 
@@ -27,9 +24,6 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
-
-
-        Button pictureBtn = findViewById(R.id.picture_btn);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
