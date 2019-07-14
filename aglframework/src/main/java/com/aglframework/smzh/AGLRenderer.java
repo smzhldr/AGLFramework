@@ -13,7 +13,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class AGLRenderer implements GLSurfaceView.Renderer {
 
-    private ISource rendererSource;
+    private ISource iSource;
     private RenderScreenFilter screenFilter;
     private final Queue<Runnable> runOnDraw;
     private final Queue<Runnable> runOnDrawEnd;
@@ -32,8 +32,8 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        if (rendererSource != null) {
-            rendererSource.onSizeChange();
+        if (iSource != null) {
+            iSource.onSizeChange();
         }
     }
 
@@ -45,8 +45,8 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
 
         runAll(runOnDraw);
 
-        if (rendererSource != null) {
-            IFilter.Frame frame = rendererSource.createFrame();
+        if (iSource != null) {
+            IFilter.Frame frame = iSource.createFrame();
 
             if (filter != null && !disable) {
                 frame = filter.draw(frame);
@@ -60,15 +60,15 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
         runAll(runOnDrawEnd);
     }
 
-    void setRendererSource(ISource rendererSource) {
-        this.rendererSource = rendererSource;
-        this.rendererSource.onSizeChange();
+    void setSource(ISource iSource) {
+        this.iSource = iSource;
+        this.iSource.onSizeChange();
     }
 
     void clear() {
-        if (rendererSource != null) {
-            rendererSource.destroy();
-            rendererSource = null;
+        if (iSource != null) {
+            iSource.destroy();
+            iSource = null;
         }
 
         if (screenFilter != null) {
@@ -114,8 +114,8 @@ public class AGLRenderer implements GLSurfaceView.Renderer {
         this.disable = disable;
     }
 
-    public ISource getRendererSource() {
-        return rendererSource;
+    public ISource getSource() {
+        return iSource;
     }
 }
 

@@ -31,7 +31,7 @@ public class AGLView extends GLSurfaceView {
     }
 
     public void setRendererSource(ISource rendererSource) {
-        renderer.setRendererSource(rendererSource);
+        renderer.setSource(rendererSource);
         requestRender();
     }
 
@@ -51,16 +51,16 @@ public class AGLView extends GLSurfaceView {
     }
 
     public int getImageWidth() {
-        if (renderer.getRendererSource() != null) {
-            return renderer.getRendererSource().getWidth();
+        if (renderer.getSource() != null) {
+            return renderer.getSource().getWidth();
         } else {
             return 0;
         }
     }
 
     public int getImageHeight() {
-        if (renderer.getRendererSource() != null) {
-            return renderer.getRendererSource().getHeight();
+        if (renderer.getSource() != null) {
+            return renderer.getSource().getHeight();
         } else {
             return 0;
         }
