@@ -68,7 +68,7 @@ public class AGLCamera {
                 }
             });
 
-            aglView.setRendererSource(new RendererSourceCamera(this, new SurfaceTexture.OnFrameAvailableListener() {
+            aglView.setRendererSource(new RendererSourceCamera(aglView.getContext(),this, new SurfaceTexture.OnFrameAvailableListener() {
                 @Override
                 public void onFrameAvailable(SurfaceTexture surfaceTexture) {
                     aglView.requestRender();

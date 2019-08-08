@@ -1,5 +1,6 @@
 package com.aglframework.smzh;
 
+import android.content.Context;
 import android.opengl.GLES20;
 
 import java.nio.ByteBuffer;
@@ -10,13 +11,14 @@ import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 
 public abstract class AGLFilter implements IFilter {
 
+    protected Context context;
     protected int programId;
     protected FloatBuffer cubeBuffer = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
     protected FloatBuffer textureBuffer = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
     protected int glAttrPosition;
     protected int glAttrTextureCoordinate;
     protected int glUniformTexture;
-    protected FrameBuffer frameBuffer;
+    protected Frame frame;
     private int outputWidth;
     private int outputHeight;
     private boolean hasInit;
@@ -44,18 +46,22 @@ public abstract class AGLFilter implements IFilter {
             "     gl_FragColor = vec4(texture2D(inputImageTexture, textureCoordinate).rgb, 1.0);\n" +
             "}";
 
-    public static final float cube[] = {
+    public static final float[] cube = {
             -1.0f, -1.0f,
             1.0f, -1.0f,
             -1.0f, 1.0f,
             1.0f, 1.0f,
     };
-    public float[] textureCords = {
+    public static float[] textureCords = {
             0.0f, 0.0f,
             1.0f, 0.0f,
             0.0f, 1.0f,
             1.0f, 1.0f
     };
+
+    public AGLFilter(Context context) {
+        this.context = context;
+    }
 
     private void init() {
         if (!hasInit) {
@@ -102,13 +108,13 @@ public abstract class AGLFilter implements IFilter {
 
         bindTexture(0);
         if (!isNeedRendererScreen) {
-            return new Frame(frameBuffer.texture, frameBuffer.textureWidth, frameBuffer.textureHeight);
+            return AGLFilter.this.frame;
         } else {
-            return frame;
+            return null;
         }
     }
 
-    protected void onDrawArraysPre(Frame frame) {
+    protected void onDrawArraysPre(Frame frameBuffer) {
 
     }
 
@@ -120,8 +126,8 @@ public abstract class AGLFilter implements IFilter {
         if (width != outputWidth || height != outputHeight) {
             outputWidth = width;
             outputHeight = height;
-            FrameBufferManager.destroyFrameBuffers(frameBuffer);
-            frameBuffer = FrameBufferManager.createFrameBuffers(outputWidth, outputHeight);
+            FrameBufferProvider.destroyFrameBuffers(frame);
+            frame = FrameBufferProvider.createFrameBuffers(outputWidth, outputHeight);
         }
     }
 
@@ -129,7 +135,7 @@ public abstract class AGLFilter implements IFilter {
         if (isNeedRendererScreen) {
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
         } else {
-            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.frameBuffer);
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frame.getFrameBuffer());
         }
         GLES20.glViewport(0, 0, outputWidth, outputHeight);
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -142,8 +148,8 @@ public abstract class AGLFilter implements IFilter {
 
     public void destroy() {
         hasInit = false;
-        FrameBufferManager.destroyFrameBuffers(frameBuffer);
-        frameBuffer = null;
+        FrameBufferProvider.destroyFrameBuffers(frame);
+        frame = null;
         outputWidth = 0;
         outputHeight = 0;
     }

@@ -1,10 +1,8 @@
 package com.aglframework.smzh;
 
-import com.aglframework.smzh.IFilter.Frame;
-
 public interface ISource {
 
-    Frame createFrame();
+    IFilter.Frame createFrame();
 
     void onSizeChange();
 

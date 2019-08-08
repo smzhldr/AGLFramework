@@ -14,6 +14,7 @@ import com.aglframework.smzh.AGLView;
 import com.aglframework.smzh.CombineFilter;
 import com.aglframework.smzh.IFilter;
 import com.aglframework.smzh.camera.AGLCamera;
+import com.aglframework.smzh.filter.SmoothFilter;
 import com.aglframework.smzh.filter.WhiteFilter;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
     SeekBar smoothSeekBar;
 
     WhiteFilter whiteFilter;
+    SmoothFilter smoothFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,15 +101,33 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
 
 
     private List<IFilter> filters = new ArrayList<>();
+    private int whiteLevel;
+    private int smoothLevel;
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         filters.clear();
         if (seekBar.getId() == R.id.sb_white) {
             if (whiteFilter == null) {
-                whiteFilter = new WhiteFilter();
+                whiteFilter = new WhiteFilter(this);
             }
+            whiteLevel = progress;
             whiteFilter.setWhiteLevel(progress / 100f);
+        }
+
+        if (seekBar.getId() == R.id.sb_smooth) {
+            if (smoothFilter == null) {
+                smoothFilter = new SmoothFilter(this);
+            }
+            smoothLevel = progress;
+            smoothFilter.setSmoothLevel(progress / 100f);
+        }
+
+        if (smoothLevel > 1) {
+            filters.add(smoothFilter);
+        }
+
+        if (whiteLevel > 1) {
             filters.add(whiteFilter);
         }
 
@@ -122,9 +142,5 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
-    }
-
-    private void updateFilter() {
-        aglView.setFilter(whiteFilter);
     }
 }

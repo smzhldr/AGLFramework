@@ -1,5 +1,6 @@
 package com.aglframework.smzh.camera;
 
+import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.graphics.SurfaceTexture.OnFrameAvailableListener;
 import android.hardware.Camera;
@@ -26,10 +27,10 @@ public class RendererSourceCamera implements ISource {
     private int width;
     private int height;
 
-    public RendererSourceCamera(AGLCamera camera, OnFrameAvailableListener availableListener) {
+    public RendererSourceCamera(Context context, AGLCamera camera, OnFrameAvailableListener availableListener) {
         this.onFrameAvailableListener = availableListener;
         this.camera = camera;
-        this.previewFilter = new CamerPreviewFilter();
+        this.previewFilter = new CamerPreviewFilter(context);
         Camera.Size size = camera.getParameter().getPreviewSize();
         this.width = size.height;
         this.height = size.width;
@@ -44,7 +45,7 @@ public class RendererSourceCamera implements ISource {
                 surfaceTexture.setOnFrameAvailableListener(onFrameAvailableListener);
                 camera.startPreview(surfaceTexture);
             }
-            frame = new IFilter.Frame(textureId, width, height);
+            frame = new IFilter.Frame(0, textureId, width, height);
         }
         try {
             surfaceTexture.updateTexImage();
