@@ -3,6 +3,8 @@ package com.aglframework.smzh;
 import android.content.Context;
 import android.opengl.GLES20;
 
+import com.aglframework.smzh.aglframework.R;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -12,47 +14,32 @@ import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 public abstract class AGLFilter implements IFilter {
 
     protected Context context;
+
     protected int programId;
-    protected FloatBuffer cubeBuffer = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-    protected FloatBuffer textureBuffer = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
     protected int glAttrPosition;
     protected int glAttrTextureCoordinate;
     protected int glUniformTexture;
+
     protected Frame frame;
     private int outputWidth;
     private int outputHeight;
+
     private boolean hasInit;
     private boolean isNeedRendererScreen;
 
-    public static final String NO_FILTER_VERTEX_SHADER = "" +
-            "attribute vec4 position;\n" +
-            "attribute vec4 inputTextureCoordinate;\n" +
-            " \n" +
-            "varying vec2 textureCoordinate;\n" +
-            " \n" +
-            "void main()\n" +
-            "{\n" +
-            "    gl_Position = position;\n" +
-            "    textureCoordinate = inputTextureCoordinate.xy;\n" +
-            "}";
-    @SuppressWarnings("WeakerAccess")
-    public static final String NO_FILTER_FRAGMENT_SHADER = "" +
-            "varying highp vec2 textureCoordinate;\n" +
-            " \n" +
-            "uniform sampler2D inputImageTexture;\n" +
-            " \n" +
-            "void main()\n" +
-            "{\n" +
-            "     gl_FragColor = vec4(texture2D(inputImageTexture, textureCoordinate).rgb, 1.0);\n" +
-            "}";
+    private FloatBuffer cubeBuffer = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+    private FloatBuffer textureBuffer = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
 
-    public static final float[] cube = {
+    private int vertexResId;
+    private int fragmentResId;
+
+    protected static final float[] cube = {
             -1.0f, -1.0f,
             1.0f, -1.0f,
             -1.0f, 1.0f,
             1.0f, 1.0f,
     };
-    public static float[] textureCords = {
+    protected static float[] textureCords = {
             0.0f, 0.0f,
             1.0f, 0.0f,
             0.0f, 1.0f,
@@ -60,17 +47,33 @@ public abstract class AGLFilter implements IFilter {
     };
 
     public AGLFilter(Context context) {
-        this.context = context;
+        this(context, R.raw.single_input_v, R.raw.texture_f);
     }
+
+    public AGLFilter(Context context, int fragmentResId) {
+        this(context, R.raw.single_input_v, fragmentResId);
+    }
+
+    public AGLFilter(Context context, int vertexResId, int fragmentResId) {
+        this.context = context;
+        this.vertexResId = vertexResId;
+        this.fragmentResId = fragmentResId;
+    }
+
 
     private void init() {
         if (!hasInit) {
+            programId = OpenGlUtils.loadProgram(context, vertexResId, fragmentResId);
+            glAttrPosition = GLES20.glGetAttribLocation(programId, "position");
+            glAttrTextureCoordinate = GLES20.glGetAttribLocation(programId, "inputTextureCoordinate");
+            glUniformTexture = GLES20.glGetUniformLocation(programId, "inputImageTexture");
             onInit();
             hasInit = true;
         }
     }
 
-    protected abstract void onInit();
+    protected void onInit() {
+    }
 
     public Frame draw(Frame frame) {
         init();
@@ -107,14 +110,20 @@ public abstract class AGLFilter implements IFilter {
         GLES20.glDisableVertexAttribArray(glAttrTextureCoordinate);
 
         bindTexture(0);
+
         if (!isNeedRendererScreen) {
+            onDrawArraysAfter(AGLFilter.this.frame);
             return AGLFilter.this.frame;
         } else {
             return null;
         }
     }
 
-    protected void onDrawArraysPre(Frame frameBuffer) {
+    protected void onDrawArraysPre(Frame frame) {
+
+    }
+
+    protected void onDrawArraysAfter(Frame frame) {
 
     }
 

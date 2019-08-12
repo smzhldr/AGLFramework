@@ -1,6 +1,7 @@
 package com.aglframework.smzh.agl_framework;
 
 import android.app.Activity;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.aglframework.smzh.CombineFilter;
 import com.aglframework.smzh.IFilter;
 import com.aglframework.smzh.camera.AGLCamera;
 import com.aglframework.smzh.filter.SmoothFilter;
+import com.aglframework.smzh.filter.StickerFilter;
 import com.aglframework.smzh.filter.WhiteFilter;
 
 import java.util.ArrayList;
@@ -25,13 +27,17 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
 
     AGLView aglView;
     AGLCamera aglCamera;
+
     ImageView switchButton;
     ImageView homeButton;
+    ImageView stickerButton;
+
     SeekBar whiteSeekBar;
     SeekBar smoothSeekBar;
 
     WhiteFilter whiteFilter;
     SmoothFilter smoothFilter;
+    StickerFilter stickerFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,9 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
 
         smoothSeekBar.setOnSeekBarChangeListener(this);
 
+        stickerButton = findViewById(R.id.iv_sticker_button);
+        stickerButton.setOnClickListener(this);
+
     }
 
     @Override
@@ -96,6 +105,13 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
             }
         } else if (v.getId() == R.id.iv_camera_home) {
             finish();
+        } else if (v.getId() == R.id.iv_sticker_button) {
+            stickerButton.setSelected(!stickerButton.isSelected());
+            if (stickerFilter == null) {
+                stickerFilter = new StickerFilter(this);
+                stickerFilter.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_home));
+            }
+            updateFilter();
         }
     }
 
@@ -122,16 +138,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
             smoothLevel = progress;
             smoothFilter.setSmoothLevel(progress / 100f);
         }
-
-        if (smoothLevel > 1) {
-            filters.add(smoothFilter);
-        }
-
-        if (whiteLevel > 1) {
-            filters.add(whiteFilter);
-        }
-
-        aglView.setFilter(CombineFilter.getCombineFilter(filters));
+        updateFilter();
     }
 
     @Override
@@ -142,5 +149,22 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+
+    private void updateFilter() {
+        filters.clear();
+        if (whiteLevel > 0) {
+            filters.add(whiteFilter);
+        }
+
+        if (smoothLevel > 0) {
+            filters.add(smoothFilter);
+        }
+
+        if (stickerButton.isSelected()) {
+            filters.add(stickerFilter);
+        }
+        aglView.setFilter(CombineFilter.getCombineFilter(filters));
     }
 }

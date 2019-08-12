@@ -20,18 +20,18 @@ public class AGLView extends GLSurfaceView {
 
     public AGLView(Context context) {
         super(context);
-        setEGLContextClientVersion(2);
+        init();
     }
 
     public AGLView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        setEGLContextClientVersion(2);
         init();
     }
 
     public void init() {
         if (renderer == null) {
             renderer = new AGLRenderer();
+            setEGLContextClientVersion(2);
             setEGLConfigChooser(8, 8, 8, 8, 16, 0);
             getHolder().setFormat(PixelFormat.RGBA_8888);
             setRenderer(renderer);

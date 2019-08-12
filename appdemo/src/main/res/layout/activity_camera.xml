@@ -21,8 +21,8 @@
         android:id="@+id/iv_camera_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/ic_home" />
 
 
@@ -30,35 +30,35 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_alignParentBottom="true"
-        android:paddingTop="20dp"
-        android:background="#58000000">
+        android:background="#58000000"
+        android:paddingTop="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:gravity="center"
-            android:textColor="#ffffff"
             android:layout_marginStart="20dp"
-            android:text="美白"/>
+            android:gravity="center"
+            android:text="美白"
+            android:textColor="#ffffff" />
 
         <SeekBar
             android:id="@+id/sb_white"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginStart="50dp"
-            android:min="0"
+            android:layout_marginEnd="30dp"
             android:max="100"
-            android:progressBackgroundTint="#88ffffff"
-            android:layout_marginEnd="30dp"/>
+            android:min="0"
+            android:progressBackgroundTint="#88ffffff" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:gravity="center"
-            android:layout_marginTop="50dp"
-            android:textColor="#ffffff"
             android:layout_marginStart="20dp"
-            android:text="磨皮"/>
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:text="磨皮"
+            android:textColor="#ffffff" />
 
         <SeekBar
             android:id="@+id/sb_smooth"
@@ -66,10 +66,22 @@
             android:layout_height="30dp"
             android:layout_marginStart="50dp"
             android:layout_marginTop="50dp"
-            android:min="0"
+            android:layout_marginEnd="30dp"
             android:max="100"
-            android:progressBackgroundTint="#88ffffff"
-            android:layout_marginEnd="30dp"/>
+            android:min="0"
+            android:progressBackgroundTint="#88ffffff" />
+
+        <ImageView
+            android:id="@+id/iv_sticker_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/sb_smooth"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_sticker"
+            android:tint="#ffffff" />
     </RelativeLayout>
 
 </RelativeLayout>
