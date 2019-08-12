@@ -109,7 +109,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
             stickerButton.setSelected(!stickerButton.isSelected());
             if (stickerFilter == null) {
                 stickerFilter = new StickerFilter(this);
-                stickerFilter.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_home));
+                stickerFilter.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sticker));
             }
             updateFilter();
         }
