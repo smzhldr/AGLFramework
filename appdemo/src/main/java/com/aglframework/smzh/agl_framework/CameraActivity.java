@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
@@ -30,7 +31,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
 
     ImageView switchButton;
     ImageView homeButton;
-    ImageView stickerButton;
+    Button stickerButton;
 
     SeekBar whiteSeekBar;
     SeekBar smoothSeekBar;

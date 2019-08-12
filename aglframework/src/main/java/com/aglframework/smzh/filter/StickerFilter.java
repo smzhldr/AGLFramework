@@ -22,12 +22,7 @@ public class StickerFilter extends AGLFilter {
     private int stickerTexture = -1;
 
 
-    private final float[] stickerCube = {
-            -0.5f, -0.5f,
-            0.5f, -0.5f,
-            -0.50f, 0.5f,
-            0.5f, 0.5f,
-    };
+    private float[] stickerCube;
 
     private final float[] stickerCoordnate = {
             0.0f, 1.0f,
@@ -49,6 +44,26 @@ public class StickerFilter extends AGLFilter {
 
         if (stickerTexture == -1) {
             return;
+        }
+
+        if(stickerCube == null){
+            stickerCube = new float[8];
+            int width = frame.getTextureWidth();
+            int height = frame.getTextureHeight();
+
+            stickerCube[0] = width / 2f - 200f;
+            stickerCube[1] = height / 2f + 200f;
+            stickerCube[2] = width / 2f + 200f;
+            stickerCube[3] = height / 2f + 200f;
+            stickerCube[4] = width / 2f - 200f;
+            stickerCube[5] = height / 2f - 200f;
+            stickerCube[6] = width / 2f + 200f;
+            stickerCube[7] = height / 2f - 200f;
+
+            for (int i = 0; i < stickerCube.length; i += 2) {
+                stickerCube[i] = stickerCube[i] * 2f / width - 1f;
+                stickerCube[i + 1] = stickerCube[i + 1] * 2f / height - 1f;
+            }
         }
 
         GLES20.glEnable(GLES20.GL_BLEND);
