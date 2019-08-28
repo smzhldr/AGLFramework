@@ -84,7 +84,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Se
     protected void onResume() {
         super.onResume();
         if (aglCamera == null) {
-            aglCamera = new AGLCamera(aglView, 1080, 2160);
+            aglCamera = new AGLCamera(aglView, 720, 1280);
         }
         aglCamera.open();
     }

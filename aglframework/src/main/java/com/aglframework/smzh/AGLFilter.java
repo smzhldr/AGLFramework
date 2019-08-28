@@ -2,6 +2,7 @@ package com.aglframework.smzh;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import android.util.Size;
 
 import com.aglframework.smzh.aglframework.R;
 
@@ -23,6 +24,7 @@ public abstract class AGLFilter implements IFilter {
     protected Frame frame;
     private int outputWidth;
     private int outputHeight;
+    private Size outSize;
 
     private boolean hasInit;
     private boolean isNeedRendererScreen;
@@ -33,18 +35,8 @@ public abstract class AGLFilter implements IFilter {
     private int vertexResId;
     private int fragmentResId;
 
-    protected static final float[] cube = {
-            -1.0f, -1.0f,
-            1.0f, -1.0f,
-            -1.0f, 1.0f,
-            1.0f, 1.0f,
-    };
-    protected static float[] textureCords = {
-            0.0f, 0.0f,
-            1.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f
-    };
+    private float[] cube = Transform.VERTICES_NOMAL;
+    private float[] textureCords = Transform.TEXTURE_NOMAL;
 
     public AGLFilter(Context context) {
         this(context, R.raw.single_input_v, R.raw.texture_f);
@@ -84,7 +76,12 @@ public abstract class AGLFilter implements IFilter {
 
         int textureWidth = frame.getTextureWidth();
         int textureHeight = frame.getTextureHeight();
-        updateOutputSize(textureWidth, textureHeight);
+        if (isNeedRendererScreen) {
+            updateOutputSize(outSize.getWidth(), outSize.getHeight());
+        } else {
+            updateOutputSize(textureWidth, textureHeight);
+        }
+
         bindFrameBuffer();
 
         GLES20.glUseProgram(programId);
@@ -98,7 +95,7 @@ public abstract class AGLFilter implements IFilter {
         GLES20.glVertexAttribPointer(glAttrTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0, textureBuffer);
         GLES20.glEnableVertexAttribArray(glAttrTextureCoordinate);
 
-        onDrawArraysPre(frame);
+        onDrawArraysPre(AGLFilter.this.frame);
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         bindTexture(frame.getTextureId());
@@ -129,6 +126,18 @@ public abstract class AGLFilter implements IFilter {
 
     protected void bindTexture(int textureId) {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+    }
+
+    public void setTextureCoordination(float[] coordination) {
+        this.textureCords = coordination;
+    }
+
+    public void setOutSize(int outputWidth, int outputHeight) {
+        outSize = new Size(outputWidth, outputHeight);
+    }
+
+    public void setVerticesCoordination(float[] coordination) {
+        this.cube = coordination;
     }
 
     private void updateOutputSize(int width, int height) {

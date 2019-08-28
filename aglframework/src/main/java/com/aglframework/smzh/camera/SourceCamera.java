@@ -7,17 +7,16 @@ import android.hardware.Camera;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
-import com.aglframework.smzh.ISource;
-import com.aglframework.smzh.OpenGlUtils;
 import com.aglframework.smzh.IFilter;
-import com.aglframework.smzh.IFilter.*;
+import com.aglframework.smzh.IFilter.Frame;
+import com.aglframework.smzh.ISource;
+import com.aglframework.smzh.Transform;
 import com.aglframework.smzh.filter.CamerPreviewFilter;
-
 
 import javax.microedition.khronos.opengles.GL10;
 
 @SuppressWarnings("deprecation")
-public class RendererSourceCamera implements ISource {
+public class SourceCamera implements ISource {
 
     private OnFrameAvailableListener onFrameAvailableListener;
     private AGLCamera camera;
@@ -27,7 +26,8 @@ public class RendererSourceCamera implements ISource {
     private int width;
     private int height;
 
-    public RendererSourceCamera(Context context, AGLCamera camera, OnFrameAvailableListener availableListener) {
+    @SuppressWarnings("SuspiciousNameCombination")
+    public SourceCamera(Context context, AGLCamera camera, OnFrameAvailableListener availableListener) {
         this.onFrameAvailableListener = availableListener;
         this.camera = camera;
         this.previewFilter = new CamerPreviewFilter(context);
@@ -52,21 +52,13 @@ public class RendererSourceCamera implements ISource {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return previewFilter.draw(frame);
-    }
 
-
-    @Override
-    public void onSizeChange() {
-        float[] matrix = new float[16];
-        OpenGlUtils.getShowMatrix(matrix, width, height, width, height);
         if (camera.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            OpenGlUtils.rotate(matrix, 90);
+            previewFilter.setTextureCoordination(Transform.TEXTURE_ROTATION_270);
         } else {
-            OpenGlUtils.flip(matrix, true, false);
-            OpenGlUtils.rotate(matrix, 270);
+            previewFilter.setTextureCoordination(Transform.TEXTURE_ROTATION_90_FLIP);
         }
-        previewFilter.setMatrix(matrix);
+        return previewFilter.draw(frame);
     }
 
     private int createOESTexture() {

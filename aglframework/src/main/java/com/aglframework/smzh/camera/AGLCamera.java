@@ -6,7 +6,6 @@ import android.hardware.Camera;
 import com.aglframework.smzh.AGLView;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -42,17 +41,18 @@ public class AGLCamera {
 
             if (previewWidth != 0 && previewHeight != 0) {
                 List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();
-                int width = previewHeight;
-                int height = previewWidth;
+                int width = 0;
+                int height = 0;
                 if (sizeList.size() > 1) {
-                    Iterator<Camera.Size> iterator = sizeList.iterator();
-                    while (iterator.hasNext()) {
-                        Camera.Size cur = iterator.next();
-                        if (cur.width >= width && cur.height >= height) {
-                            width = cur.width;
-                            height = cur.height;
+                    for (Camera.Size cur : sizeList) {
+                        if (cur.width == previewHeight && cur.height == previewWidth) {
+                            width = previewHeight;
+                            height = previewWidth;
                             break;
                         }
+                    }
+                    if (width == 0 || height == 0) {
+                        throw new RuntimeException("size is incorrect");
                     }
                 }
                 parameters.setPreviewSize(width, height);
@@ -68,13 +68,14 @@ public class AGLCamera {
                 }
             });
 
-            aglView.setRendererSource(new RendererSourceCamera(aglView.getContext(),this, new SurfaceTexture.OnFrameAvailableListener() {
+            aglView.setRendererSource(new SourceCamera(aglView.getContext(), this, new SurfaceTexture.OnFrameAvailableListener() {
                 @Override
                 public void onFrameAvailable(SurfaceTexture surfaceTexture) {
                     aglView.requestRender();
                 }
             }));
         }
+
     }
 
     public void close() {

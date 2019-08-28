@@ -84,6 +84,8 @@ public class AGLView extends GLSurfaceView {
         private final Queue<Runnable> runOnDrawEnd;
         private IFilter filter;
         private boolean disable;
+        private int outWidth;
+        private int outHeight;
 
         AGLRenderer() {
             screenFilter = new RenderScreenFilter(getContext());
@@ -97,9 +99,9 @@ public class AGLView extends GLSurfaceView {
 
         @Override
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            if (iSource != null) {
-                iSource.onSizeChange();
-            }
+            this.outWidth = width;
+            this.outHeight = height;
+            screenFilter.setOutSize(width, height);
         }
 
 
@@ -117,9 +119,8 @@ public class AGLView extends GLSurfaceView {
                     frame = filter.draw(frame);
                 }
 
-                if (screenFilter != null) {
-                    screenFilter.draw(frame);
-                }
+                screenFilter.setVerticesCoordination(Transform.adjustVetices(frame.getTextureWidth(),frame.getTextureHeight(),outWidth,outHeight));
+                screenFilter.draw(frame);
             }
 
             runAll(runOnDrawEnd);
@@ -127,7 +128,6 @@ public class AGLView extends GLSurfaceView {
 
         void setSource(ISource iSource) {
             this.iSource = iSource;
-            this.iSource.onSizeChange();
         }
 
         void clear() {
@@ -175,7 +175,7 @@ public class AGLView extends GLSurfaceView {
             }
         }
 
-        void setDisable(boolean disable){
+        void setDisable(boolean disable) {
             this.disable = disable;
         }
 
