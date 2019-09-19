@@ -61,12 +61,6 @@ public class AGLCamera {
                 parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
             }
             camera.setParameters(parameters);
-            camera.autoFocus(new Camera.AutoFocusCallback() {
-                @Override
-                public void onAutoFocus(boolean success, Camera camera) {
-
-                }
-            });
 
             aglView.setRendererSource(new SourceCamera(aglView.getContext(), this, new SurfaceTexture.OnFrameAvailableListener() {
                 @Override
@@ -74,6 +68,13 @@ public class AGLCamera {
                     aglView.requestRender();
                 }
             }));
+
+            camera.autoFocus(new Camera.AutoFocusCallback() {
+                @Override
+                public void onAutoFocus(boolean success, Camera camera) {
+
+                }
+            });
         }
 
     }
