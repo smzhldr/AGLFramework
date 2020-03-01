@@ -34,6 +34,11 @@ public class SourceCamera implements ISource {
         Camera.Size size = camera.getParameter().getPreviewSize();
         this.width = size.height;
         this.height = size.width;
+        if (camera.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            previewFilter.setTextureCoordination(Transform.TEXTURE_ROTATED_270);
+        } else {
+            previewFilter.setTextureCoordination(Transform.TEXTURE_FLIP_HORIZONTAL_AND_ROTATED_270);
+        }
     }
 
     @Override
@@ -51,12 +56,6 @@ public class SourceCamera implements ISource {
             surfaceTexture.updateTexImage();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (camera.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            previewFilter.setTextureCoordination(Transform.TEXTURE_ROTATION_270);
-        } else {
-            previewFilter.setTextureCoordination(Transform.TEXTURE_ROTATION_90_FLIP);
         }
         return previewFilter.draw(frame);
     }

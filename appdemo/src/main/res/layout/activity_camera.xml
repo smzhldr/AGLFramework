@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.aglframework.smzh.camera.CameraPreview
         android:id="@+id/camera_preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clickable="true" />
 
     <ImageView
         android:id="@+id/iv_camera_switch"
@@ -26,62 +28,44 @@
         android:src="@drawable/ic_home" />
 
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/camera_bottom_container"
         android:layout_width="match_parent"
         android:layout_height="250dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_alignParentBottom="true" />
+
+
+    <com.aglframework.smzh.agl_framework.widget.ShutterButton
+        android:id="@+id/iv_camera_shutter"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_alignParentBottom="true"
-        android:background="#58000000"
-        android:paddingTop="20dp">
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        app:color="@android:color/white"
+        app:radius="35dp"
+        app:stroke="5dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginStart="20dp"
-            android:gravity="center"
-            android:text="美白"
-            android:textColor="#ffffff" />
+    <ImageView
+        android:id="@+id/iv_camera_beauty"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/iv_camera_shutter"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/ic_camera_beauty" />
 
-        <SeekBar
-            android:id="@+id/sb_white"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="30dp"
-            android:max="100"
-            android:min="0"
-            android:progressBackgroundTint="#88ffffff" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="50dp"
-            android:gravity="center"
-            android:text="磨皮"
-            android:textColor="#ffffff" />
-
-        <SeekBar
-            android:id="@+id/sb_smooth"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="30dp"
-            android:max="100"
-            android:min="0"
-            android:progressBackgroundTint="#88ffffff" />
-
-        <Button
-            android:id="@+id/iv_sticker_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/sb_smooth"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
-            android:text="贴纸"
-            android:textColor="@color/colorAccent"
-            android:textSize="26sp" />
-    </RelativeLayout>
+    <ImageView
+        android:id="@+id/iv_camera_filter"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/iv_camera_shutter"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/ic_camera_filter" />
 
 </RelativeLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="shutter_button">
+        <attr name="color" format="color"/>
+        <attr name="radius" format="dimension"/>
+        <attr name="stroke" format="dimension"/>
+    </declare-styleable>
+</resources>

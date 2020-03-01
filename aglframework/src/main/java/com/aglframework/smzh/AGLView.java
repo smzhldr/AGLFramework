@@ -1,13 +1,18 @@
 package com.aglframework.smzh;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 
 import com.aglframework.smzh.filter.RenderScreenFilter;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -17,6 +22,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class AGLView extends GLSurfaceView {
 
     private AGLRenderer renderer;
+    private volatile boolean needCapture = false;
 
     public AGLView(Context context) {
         super(context);
@@ -75,6 +81,13 @@ public class AGLView extends GLSurfaceView {
         }
     }
 
+    public void capture(CaptureListener captureListener) {
+        if (!needCapture) {
+            needCapture = true;
+            renderer.captureListener = captureListener;
+        }
+    }
+
 
     private class AGLRenderer implements GLSurfaceView.Renderer {
 
@@ -86,6 +99,8 @@ public class AGLView extends GLSurfaceView {
         private boolean disable;
         private int outWidth;
         private int outHeight;
+        private CaptureListener captureListener;
+        private volatile boolean isCapturing = false;
 
         AGLRenderer() {
             screenFilter = new RenderScreenFilter(getContext());
@@ -95,6 +110,7 @@ public class AGLView extends GLSurfaceView {
 
         @Override
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+            screenFilter.setTextureCoordination(Transform.TEXTURE_ROTATED_180);
         }
 
         @Override
@@ -119,11 +135,37 @@ public class AGLView extends GLSurfaceView {
                     frame = filter.draw(frame);
                 }
 
-                screenFilter.setVerticesCoordination(Transform.adjustVetices(frame.getTextureWidth(),frame.getTextureHeight(),outWidth,outHeight));
+                if (needCapture && !isCapturing) {
+                    isCapturing = true;
+                    capture(frame);
+                }
+
+                screenFilter.setVerticesCoordination(Transform.adjustVetices(frame.getTextureWidth(), frame.getTextureHeight(), outWidth, outHeight));
                 screenFilter.draw(frame);
             }
 
             runAll(runOnDrawEnd);
+        }
+
+        private void capture(IFilter.Frame frame) {
+            ByteBuffer captureBuffer = ByteBuffer.allocate(getImageWidth() * getImageHeight() * 4);
+            captureBuffer.order(ByteOrder.nativeOrder());
+            captureBuffer.rewind();
+            captureBuffer.rewind();
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frame.getFrameBuffer());
+            GLES20.glReadPixels(0, 0, frame.getTextureWidth(), frame.getTextureHeight(), GLES20.GL_RGBA, GL10.GL_UNSIGNED_BYTE, captureBuffer);
+            final Bitmap bmp = Bitmap.createBitmap(frame.getTextureWidth(), frame.getTextureHeight(), Bitmap.Config.ARGB_8888);
+            bmp.copyPixelsFromBuffer(captureBuffer);
+            needCapture = false;
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (captureListener != null) {
+                        captureListener.captured(bmp);
+                        isCapturing = false;
+                    }
+                }
+            });
         }
 
         void setSource(ISource iSource) {
@@ -182,6 +224,10 @@ public class AGLView extends GLSurfaceView {
         public ISource getSource() {
             return iSource;
         }
+    }
+
+    public interface CaptureListener {
+        void captured(Bitmap bitmap);
     }
 
 }

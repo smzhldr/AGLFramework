@@ -35,8 +35,8 @@ public abstract class AGLFilter implements IFilter {
     private int vertexResId;
     private int fragmentResId;
 
-    private float[] cube = Transform.VERTICES_NOMAL;
-    private float[] textureCords = Transform.TEXTURE_NOMAL;
+    private float[] cube = Transform.RECTANGLE_VERTICES;
+    private float[] textureCords = Transform.RECTANGLE_TEXTURE;
 
     public AGLFilter(Context context) {
         this(context, R.raw.single_input_v, R.raw.texture_f);
