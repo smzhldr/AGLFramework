@@ -62,11 +62,10 @@
         android:id="@+id/sticker"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="20dp"
         android:src="@drawable/ic_sticker"
         android:tint="#FFFFFF"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="23dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -77,7 +76,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="30dp"
         android:scaleType="centerCrop"
-        android:src="@android:drawable/arrow_down_float"
+        android:src="@drawable/close"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

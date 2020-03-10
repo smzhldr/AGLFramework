@@ -2,6 +2,8 @@ package com.aglframework.smzh;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -151,17 +153,21 @@ public class AGLView extends GLSurfaceView {
             ByteBuffer captureBuffer = ByteBuffer.allocate(getImageWidth() * getImageHeight() * 4);
             captureBuffer.order(ByteOrder.nativeOrder());
             captureBuffer.rewind();
-            captureBuffer.rewind();
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frame.getFrameBuffer());
             GLES20.glReadPixels(0, 0, frame.getTextureWidth(), frame.getTextureHeight(), GLES20.GL_RGBA, GL10.GL_UNSIGNED_BYTE, captureBuffer);
             final Bitmap bmp = Bitmap.createBitmap(frame.getTextureWidth(), frame.getTextureHeight(), Bitmap.Config.ARGB_8888);
             bmp.copyPixelsFromBuffer(captureBuffer);
+
+            Matrix matrix = new android.graphics.Matrix();
+            matrix.postScale(-1, 1);
+            final Bitmap result = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+
             needCapture = false;
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
                     if (captureListener != null) {
-                        captureListener.captured(bmp);
+                        captureListener.captured(result);
                         isCapturing = false;
                     }
                 }
