@@ -2,6 +2,7 @@ package com.aglframework.smzh.camera;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
 
 import com.aglframework.smzh.AGLView;
 
@@ -69,14 +70,17 @@ public class AGLCamera {
                 }
             }));
 
-            camera.autoFocus(new Camera.AutoFocusCallback() {
-                @Override
-                public void onAutoFocus(boolean success, Camera camera) {
+            try {
+                camera.autoFocus(new Camera.AutoFocusCallback() {
+                    @Override
+                    public void onAutoFocus(boolean success, Camera camera) {
 
-                }
-            });
+                    }
+                });
+            } catch (Exception e) {
+
+            }
         }
-
     }
 
     public void close() {
