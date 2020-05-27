@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 
+import com.aglframework.smzh.egl.GLView;
 import com.aglframework.smzh.filter.RenderScreenFilter;
 
 import java.nio.ByteBuffer;
@@ -21,7 +22,7 @@ import java.util.Queue;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class AGLView extends GLSurfaceView {
+public class AGLView extends GLView/*GLSurfaceView*/ {
 
     private AGLRenderer renderer;
     private volatile boolean needCapture = false;
@@ -204,7 +205,7 @@ public class AGLView extends GLSurfaceView {
         }
 
         private void runAll(Queue<Runnable> queue) {
-            synchronized (queue) {
+            synchronized (runOnDraw) {
                 while (!queue.isEmpty()) {
                     queue.poll().run();
                 }
