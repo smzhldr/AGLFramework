@@ -12,7 +12,7 @@ void modifyColor(vec4 color){
 
 void main() {
     vec4 nColor = texture2D(inputImageTexture, textureCoordinate);
-    vec4 deltaColor = nColor+vec4(vec3(level * 0.25), 0.0);
+    vec4 deltaColor = nColor+vec4(level * 0.15, level * 0.25, level * 0.25, 0.0);
     modifyColor(deltaColor);
     gl_FragColor = deltaColor;
 }

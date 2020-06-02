@@ -2,7 +2,6 @@ package com.aglframework.smzh.camera;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.util.Log;
 
 import com.aglframework.smzh.AGLView;
 
@@ -31,7 +30,7 @@ public class AGLCamera {
     }
 
     public AGLCamera(AGLView aglView) {
-        this.aglView = aglView;
+        this(aglView, 0, 0);
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -40,28 +39,39 @@ public class AGLCamera {
             camera = Camera.open(cameraId);
             Camera.Parameters parameters = camera.getParameters();
 
-            if (previewWidth != 0 && previewHeight != 0) {
-                List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();
-                int width = 0;
-                int height = 0;
-                if (sizeList.size() > 1) {
-                    for (Camera.Size cur : sizeList) {
-                        if (cur.width == previewHeight && cur.height == previewWidth) {
-                            width = previewHeight;
-                            height = previewWidth;
-                            break;
-                        }
-                    }
-                    if (width == 0 || height == 0) {
-                        throw new RuntimeException("size is incorrect");
+            List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();
+            int width = 0;
+            int height = 0;
+            if (sizeList.size() > 1) {
+                for (Camera.Size cur : sizeList) {
+                    if (cur.width == previewHeight && cur.height == previewWidth) {
+                        width = previewHeight;
+                        height = previewWidth;
+                        break;
                     }
                 }
+                if (width == 0 || height == 0) {
+                    width = sizeList.get(0).height;
+                    height = sizeList.get(0).width;
+                }
+            }
+
+            try {
                 parameters.setPreviewSize(width, height);
+                if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+                }
+                camera.setParameters(parameters);
+                camera.autoFocus(new Camera.AutoFocusCallback() {
+                    @Override
+                    public void onAutoFocus(boolean success, Camera camera) {
+
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-            }
-            camera.setParameters(parameters);
+
 
             aglView.setRendererSource(new SourceCamera(aglView.getContext(), this, new SurfaceTexture.OnFrameAvailableListener() {
                 @Override
@@ -70,16 +80,7 @@ public class AGLCamera {
                 }
             }));
 
-            try {
-                camera.autoFocus(new Camera.AutoFocusCallback() {
-                    @Override
-                    public void onAutoFocus(boolean success, Camera camera) {
 
-                    }
-                });
-            } catch (Exception e) {
-
-            }
         }
     }
 

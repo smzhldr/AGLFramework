@@ -34,7 +34,6 @@ import com.aglframework.smzh.camera.CameraPreview;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -142,8 +141,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                             currentVideoValues.put(MediaStore.Images.Media.DESCRIPTION, "com.smzh.aglframework");
                             currentVideoValues.put(MediaStore.Images.Media.SIZE, f.length());
                             getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, currentVideoValues);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

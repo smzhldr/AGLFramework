@@ -25,7 +25,6 @@ import java.util.List;
 public class CameraPresenter {
 
     private CameraPreview cameraPreview;
-    private CameraView cameraView;
     private AGLCamera aglCamera;
 
     private List<IFilter> filters = new ArrayList<>();
@@ -41,8 +40,7 @@ public class CameraPresenter {
 
     public CameraPresenter(CameraPreview cameraPreview, CameraView cameraView) {
         this.cameraPreview = cameraPreview;
-        this.cameraView = cameraView;
-        this.aglCamera = new AGLCamera(cameraPreview, 720, 1280);
+        this.aglCamera = new AGLCamera(cameraPreview);
         whiteLevel = 50;
         smoothLevel = 50;
         updateFilter();
