@@ -79,7 +79,8 @@ public class GLView extends SurfaceView implements SurfaceHolder.Callback {
         private int width, height;
         private GLSurfaceView.Renderer renderer;
         private boolean isRunning = true;
-        private LinkedBlockingQueue<Integer> msgQueue = new LinkedBlockingQueue<>(10);
+        private final Object lock = new Object();
+        private final LinkedBlockingQueue<Integer> msgQueue = new LinkedBlockingQueue<>(10);
 
         void setSize(int width, int height) {
             this.width = width;
@@ -95,9 +96,10 @@ public class GLView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         void addMessage(int msg) {
-            synchronized (this) {
+            synchronized (lock) {
+                msgQueue.remove(msg);
                 msgQueue.offer(msg);
-                this.notifyAll();
+                lock.notifyAll();
             }
         }
 
@@ -105,49 +107,52 @@ public class GLView extends SurfaceView implements SurfaceHolder.Callback {
         public void run() {
             while (isRunning) {
 
-                synchronized (this) {
+                synchronized (lock) {
                     try {
-                        this.wait();
+                        lock.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
 
-                if (msgQueue.peek() == null || renderer == null) {
+                if (renderer == null) {
                     continue;
                 }
 
-                int msg = msgQueue.poll();
+                while (msgQueue.size() > 0) {
+                    int msg = msgQueue.poll();
 
-                switch (msg) {
-                    case MSG_CREATE:
-                        if (eglHelper == null) {
-                            eglHelper = new EglHelper();
-                            eglHelper.createGL(holder.getSurface());
-                            renderer.onSurfaceCreated(null, null);
-                            renderer.onSurfaceChanged(null, width, height);
-                            renderer.onDrawFrame(null);
-                        }
-                        break;
-                    case MSG_DRAW:
-                        if (eglHelper != null) {
-                            renderer.onDrawFrame(null);
-                        }
-                        break;
-                    case MSG_DESTROY:
-                        if (eglHelper != null) {
-                            eglHelper.destroyGL();
-                            eglHelper = null;
-                            width = 0;
-                            height = 0;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                    switch (msg) {
+                        case MSG_CREATE:
+                            if (eglHelper == null) {
+                                eglHelper = new EglHelper();
+                                eglHelper.createGL(holder.getSurface());
+                                renderer.onSurfaceCreated(null, null);
+                                renderer.onSurfaceChanged(null, width, height);
+                                renderer.onDrawFrame(null);
+                            }
+                            break;
+                        case MSG_DRAW:
+                            if (eglHelper != null) {
+                                renderer.onDrawFrame(null);
+                            }
+                            break;
+                        case MSG_DESTROY:
+                            if (eglHelper != null) {
+                                eglHelper.destroyGL();
+                                eglHelper = null;
+                                width = 0;
+                                height = 0;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
 
-                if (eglHelper != null) {
-                    eglHelper.swapBuffer();
+                    if (eglHelper != null) {
+                        eglHelper.swapBuffer();
+                    }
+
                 }
             }
         }
